@@ -5,13 +5,17 @@
   <title>Authentification…</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.auth0.com/js/auth0/9.19/auth0.min.js"></script>
+  <style>
+    body { font-family:"Segoe UI",sans-serif; text-align:center; padding:2rem; }
+    p { font-size:1rem; }
+  </style>
 </head>
-<body style="font-family:Segoe UI, sans-serif; padding:2rem; text-align:center;">
+<body>
   <p>Finalisation de la connexion…</p>
   <script>
     const auth0 = new auth0.WebAuth({
-      domain:        'dev-usf1lg8hr3jkzks8.eu.auth0.com',
-      clientID:      '5DMEnytVuWylM1ROmk0dvCrEzXZ8E8pC'
+      domain:   'dev-usf1lg8hr3jkzks8.eu.auth0.com',
+      clientID: '7LL5GL3rz8CSYWaALLJaYd44ICrE5cjM'
     });
     auth0.parseHash((err, authResult) => {
       if (err || !authResult || !authResult.idToken) {
@@ -19,20 +23,15 @@
         console.error(err);
         return;
       }
-      // Appeler l’API Omada pour autoriser
       const p = new URLSearchParams(location.search);
       fetch(
         `https://euw1-omada-cloud.tplinkcloud.com/api/v2/captiveportal/authorize?` +
-        `mac=${p.get('mac')}&ip=${p.get('ip')}` +
-        `&ap=${p.get('ap')}&ssid=${p.get('ssid')}`,
+        `mac=${p.get('mac')}&ip=${p.get('ip')}&ap=${p.get('ap')}&ssid=${p.get('ssid')}`,
         { headers:{ 'Authorization':'Bearer 181f1a86985947db8d0236ee0fd4da4d' } }
       )
       .then(r => {
-        if (r.ok) {
-          window.location = 'https://www.lafarm.example';
-        } else {
-          document.body.innerHTML = '<p>Impossible d’autoriser l’accès.</p>';
-        }
+        if (r.ok) window.location = 'https://www.lafarm.example';
+        else document.body.innerHTML = '<p>Impossible d’autoriser l’accès.</p>';
       })
       .catch(() => {
         document.body.innerHTML = '<p>Erreur réseau.</p>';
