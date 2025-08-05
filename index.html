@@ -40,6 +40,7 @@
     .container header h1 {
       font-size: 1.75rem;
       color: #111;
+      margin-bottom: 0.25rem;
     }
     .container header p {
       font-size: 0.95rem;
@@ -81,11 +82,35 @@
     .checkbox-group label {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      line-height: 1.4;
     }
     .checkbox-group input {
       margin-right: 0.75rem;
       margin-top: 0.2rem;
+    }
+
+    /* Inline-style checkbox for links */
+    label.chk-inline {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    label.chk-inline span {
+      display: block;
+    }
+    label.chk-inline a {
+      color: #1f8efa;
+      text-decoration: underline;
+    }
+
+    /* Options section separation */
+    fieldset.checkbox-group:last-of-type {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
     }
 
     /* Submit */
@@ -132,20 +157,20 @@
         <input type="email" name="email" required placeholder="prenom.nom@exemple.com">
       </label>
 
-      <!-- Consentements -->
+      <!-- Consentements obligatoires -->
       <fieldset class="checkbox-group">
         <legend>Vos consentements *</legend>
         <label>
           <input type="checkbox" name="consent-rgpd" required>
           J’accepte que mon adresse e-mail soit collectée et utilisée par LA FARM pour l’envoi de la newsletter (RGPD).
         </label>
-        <label>
+        <label class="chk-inline">
           <input type="checkbox" name="accept-terms" required>
-          J’ai lu et j’accepte les <a href="https://www.lafarm.example/terms" target="_blank">CGU</a> et la <a href="https://www.lafarm.example/privacy" target="_blank">Politique de confidentialité</a>.
+          <span>J’ai lu et j’accepte les <a href="https://www.lafarm.example/terms" target="_blank">CGU</a> et la <a href="https://www.lafarm.example/privacy" target="_blank">Politique de confidentialité</a>.</span>
         </label>
       </fieldset>
 
-      <!-- Options -->
+      <!-- Options facultatives -->
       <fieldset class="checkbox-group">
         <legend>Options (facultatif)</legend>
         <label>
