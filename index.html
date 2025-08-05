@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Portail Captif • La Farm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* Reset minimal */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 380px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .card img.logo {
+      max-width: 120px;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h1 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      color: #111;
+    }
+    .card p.subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Social buttons */
+    .button-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      width: 100%;
+      padding: .65rem;
+      margin-bottom: .75rem;
+      font-size: .95rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background .2s, border-color .2s;
+    }
+    .button-social svg {
+      width: 20px; height: 20px;
+    }
+    .btn-google {
+      background: #fff; color: #444;
+      border-color: #ddd;
+    }
+    .btn-google:hover { background: #f7f7f7; }
+    .btn-facebook {
+      background: #3b5998; color: #fff;
+    }
+    .btn-facebook:hover { background: #334d84; }
+    /* ajoutez d’autres providers si besoin */
+
+    hr.divider {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 1.5rem 0;
+    }
+
+    /* Email form */
+    .card form {
+      display: grid;
+      grid-row-gap: 1rem;
+      text-align: left;
+    }
+    .card label {
+      font-size: .95rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .card input[type="email"] {
+      padding: .65rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: .95rem;
+      margin-top: .35rem;
+    }
+    .card fieldset {
+      border: none;
+      padding: 0;
+    }
+    .card legend {
+      font-weight: 600;
+      margin-bottom: .5rem;
+    }
+    .card .checkbox-group label {
+      display: flex;
+      align-items: center;
+      font-size: .9rem;
+      margin-bottom: .5rem;
+    }
+    .card .checkbox-group input {
+      margin-right: .5rem;
+    }
+
+    .card button.submit {
+      background: #1f8efa;
+      color: #fff;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      padding: .75rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .card button.submit:hover {
+      background: #196fc1;
+    }
+
+    .card footer {
+      margin-top: 1.25rem;
+      font-size: .8rem;
+      color: #777;
+    }
+    .card footer a {
+      color: #1f8efa;
+      text-decoration: none;
+    }
+  </style>
+  <!-- Auth0 JS si utilisation social -->
+  <script src="https://cdn.auth0.com/js/auth0/9.19/auth0.min.js"></script>
+</head>
+<body>
+
+  <div class="card">
+    <img class="logo" src="LAFARM_Noir.png" alt="La Farm Logo">
+    <h1>Accès Wi-Fi La Farm</h1>
+    <p class="subtitle">Connectez-vous pour naviguer</p>
+
+    <!-- Social Logins -->
+    <div id="social-buttons">
+      <div class="button-social btn-google" id="btn-google">
+        <!-- Google SVG icon -->
+        <svg viewBox="0 0 24 24"><path fill="#EA4335" d="M...."/></svg>
+        Se connecter avec Google
+      </div>
+      <div class="button-social btn-facebook" id="btn-facebook">
+        <!-- Facebook SVG icon -->
+        <svg viewBox="0 0 24 24"><path fill="#FFF" d="M...."/></svg>
+        Se connecter avec Facebook
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Email Form -->
+    <form id="emailForm">
+      <label>
+        Adresse e-mail
+        <input type="email" name="email" required placeholder="prenom.nom@exemple.com">
+      </label>
+      <fieldset class="checkbox-group">
+        <legend>Consentements *</legend>
+        <label>
+          <input type="checkbox" name="consent-rgpd" required>
+          J’accepte la collecte et l’utilisation de mon e-mail pour la newsletter.
+        </label>
+      </fieldset>
+      <button type="submit" class="submit">Envoyer</button>
+    </form>
+
+    <footer>
+      <a href="cgu.html" target="_blank">CGU</a> •
+      <a href="politique.html" target="_blank">Politique de confidentialité</a>
+    </footer>
+  </div>
+
+  <script>
+    // === Auth0 init (exemple) ===
+    const auth0 = new auth0.WebAuth({
+      domain:   'VOTRE_DOMAIN.auth0.com',
+      clientID: 'VOTRE_CLIENT_ID',
+      redirectUri: window.location.origin + '/lafarm-portal/callback.html',
+      responseType: 'token id_token',
+      scope: 'openid profile email'
+    });
+    document.getElementById('btn-google').onclick = () =>
+      auth0.authorize({ connection: 'google-oauth2' });
+    document.getElementById('btn-facebook').onclick = () =>
+      auth0.authorize({ connection: 'facebook' });
+
+    // === Email form submit ===
+    document.getElementById('emailForm').addEventListener('submit', e => {
+      e.preventDefault();
+      // (1) envoyer à votre back-end si besoin
+      // (2) autoriser Omada :
+      const p = new URLSearchParams(location.search);
+      fetch(
+        `https://euw1-omada-cloud.tplinkcloud.com/api/v2/captiveportal/authorize?`+
+        `mac=${p.get('mac')}&ip=${p.get('ip')}`+
+        `&ap=${p.get('ap')}&ssid=${p.get('ssid')}`,
+        { headers:{ 'Authorization':'Bearer 181f1a86985947db8d0236ee0fd4da4d' } }
+      ).then(() => window.location = 'https://www.lafarm.example');
+    });
+  </script>
+</body>
+</html>
