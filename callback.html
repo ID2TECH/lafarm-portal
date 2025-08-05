@@ -3,30 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>Authentification…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.auth0.com/js/auth0/9.19/auth0.min.js"></script>
 </head>
-<body>
+<body style="font-family:Segoe UI, sans-serif; padding:2rem; text-align:center;">
   <p>Finalisation de la connexion…</p>
   <script>
     const auth0 = new auth0.WebAuth({
-      domain:   'VOTRE_DOMAIN.auth0.com',
-      clientID: 'VOTRE_CLIENT_ID'
+      domain:        'dev-usf1lg8hr3jkzks8.eu.auth0.com',
+      clientID:      '5DMEnytVuWylM1ROmk0dvCrEzXZ8E8pC'
     });
     auth0.parseHash((err, authResult) => {
-      if (authResult && authResult.idToken) {
-        // Puis autoriser Omada :
-        const p = new URLSearchParams(location.search);
-        fetch(
-          `https://euw1-omada-cloud.tplinkcloud.com/api/v2/captiveportal/authorize?` +
-          `mac=${p.get('mac')}&ip=${p.get('ip')}` +
-          `&ap=${p.get('ap')}&ssid=${p.get('ssid')}`,
-          { headers:{ 'Authorization':'Bearer 181f1a86985947db8d0236ee0fd4da4d' } }
-        ).then(() => {
-          window.location = 'https://www.lafarm.example';
-        });
-      } else {
+      if (err || !authResult || !authResult.idToken) {
+        document.body.innerHTML = '<p>Échec de l’authentification.</p>';
         console.error(err);
+        return;
       }
+      // Appeler l’API Omada pour autoriser
+      const p = new URLSearchParams(location.search);
+      fetch(
+        `https://euw1-omada-cloud.tplinkcloud.com/api/v2/captiveportal/authorize?` +
+        `mac=${p.get('mac')}&ip=${p.get('ip')}` +
+        `&ap=${p.get('ap')}&ssid=${p.get('ssid')}`,
+        { headers:{ 'Authorization':'Bearer 181f1a86985947db8d0236ee0fd4da4d' } }
+      )
+      .then(r => {
+        if (r.ok) {
+          window.location = 'https://www.lafarm.example';
+        } else {
+          document.body.innerHTML = '<p>Impossible d’autoriser l’accès.</p>';
+        }
+      })
+      .catch(() => {
+        document.body.innerHTML = '<p>Erreur réseau.</p>';
+      });
     });
   </script>
 </body>
